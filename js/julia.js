@@ -62,13 +62,21 @@ function applyShader(target) {
             vec2 z = uv;
 
             float count = 0.0;
+            float z_fin = 0.0;
+
             for (float i = 0.0; i < 100.0; i++) {
                 z = vec2(z.x*z.x - z.y*z.y, 2.0*z.x*z.y) + c;
+                z_fin = length(z);
                 if (length(z) > 2.0) break;
                 count++;
             }
 
             float t = count / 100.0;
+            // simple smoothing
+            if (z_fin > 2.0) {
+                t -= (z_fin - 2.0) / 200.0;
+            }
+
             vec3 color = palette(t*0.95);
     
             gl_FragColor = vec4(color, 1.0);
@@ -170,9 +178,9 @@ function applyShader(target) {
 // update mouse position on mouse move
 let mouse = { x: 0, y: 0 };
 isAnimating = true;
-let r = 0.5;
-let g = 0.5;
-let b = 0.5;
+let r = 0;
+let g = 1;
+let b = 2;
 
 window.addEventListener("mousemove", (e) => {
     isAnimating = false;
