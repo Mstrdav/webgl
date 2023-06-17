@@ -41,14 +41,12 @@ function applyShader(target) {
         uniform vec2 canvasSize;
         uniform float time;
         uniform vec2 mouse;
+        uniform float r;
+        uniform float g;
+        uniform float b;
       
         vec3 palette(float t) {
-            vec3 a = vec3(0.5, 0.5, 0.5);
-            vec3 b = vec3(0.5, 0.5, 0.5);
-            vec3 c = vec3(1.0, 1.0, 1.0);
-            vec3 d = vec3(0.263, 0.416, 0.557);
-    
-            return a + b*cos( 6.28318*(c*t+d) );
+            return vec3(sin(t*r), sin(t*g), sin(t*b));
         }
     
         void main() {
@@ -71,7 +69,7 @@ function applyShader(target) {
             }
 
             float t = count / 100.0;
-            vec3 color = palette(t*1.1);
+            vec3 color = palette(t*0.95);
     
             gl_FragColor = vec4(color, 1.0);
         }
@@ -122,6 +120,19 @@ function applyShader(target) {
         const mouseUniform = gl.getUniformLocation(program, "mouse");
         gl.uniform2f(mouseUniform, mouse.x, mouse.y);
 
+        r = r + 0.001;
+        g = g + 0.002;
+        b = b + 0.003;
+
+        // set uniform rgb values
+        const rUniform = gl.getUniformLocation(program, "r");
+        gl.uniform1f(rUniform, r);
+
+        const gUniform = gl.getUniformLocation(program, "g");
+        gl.uniform1f(gUniform, g);
+
+        const bUniform = gl.getUniformLocation(program, "b");
+        gl.uniform1f(bUniform, b);
 
         // Four vertices represent corners of the canvas
         // Each row is x,y,z coordinate
@@ -159,6 +170,9 @@ function applyShader(target) {
 // update mouse position on mouse move
 let mouse = { x: 0, y: 0 };
 isAnimating = true;
+let r = 0.5;
+let g = 0.5;
+let b = 0.5;
 
 window.addEventListener("mousemove", (e) => {
     isAnimating = false;
