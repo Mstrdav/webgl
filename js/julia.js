@@ -109,6 +109,15 @@ function applyShader(target) {
         const timeUniform = gl.getUniformLocation(program, "time");
         gl.uniform1f(timeUniform, performance.now() / 1000);
 
+        if (isAnimating) {
+            mouse.x = Math.sin(performance.now() / 8000) * 450;
+            mouse.y = Math.cos(performance.now() / 5000) * 300;
+
+            // shift mouse position to center
+            mouse.x += canvas.width / 2;
+            mouse.y += canvas.height / 2;
+        }
+
         // Set uniform mouse value
         const mouseUniform = gl.getUniformLocation(program, "mouse");
         gl.uniform2f(mouseUniform, mouse.x, mouse.y);
@@ -149,13 +158,17 @@ function applyShader(target) {
 
 // update mouse position on mouse move
 let mouse = { x: 0, y: 0 };
+isAnimating = true;
+
 window.addEventListener("mousemove", (e) => {
+    isAnimating = false;
     mouse.x = e.clientX;
     mouse.y = e.clientY;
 });
 
 // and on touch move
 window.addEventListener("touchmove", (e) => {
+    isAnimating = false;
     mouse.x = e.touches[0].clientX;
     mouse.y = e.touches[0].clientY;
 });
